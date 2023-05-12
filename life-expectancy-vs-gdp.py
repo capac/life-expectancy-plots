@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import pandas as pd
 from pathlib import Path
+from sklearn.linear_model import LinearRegression
+
+import warnings
+warnings.filterwarnings('ignore')
 
 plt.style.use('scatterplot-style.mplstyle')
 
@@ -68,4 +72,33 @@ le = merged_df['Life Expectancy']
 for label in selected_countries:
     ax.annotate(label, (gdp_pc.loc[label]-400, le.loc[label]-0.4))
 
+select_gdp_df = select_countries_df[['GDP per capita']]
+select_le_df = select_countries_df['Life Expectancy']
+min_gdp = select_gdp_df.min()
+max_gdp = select_gdp_df.max()
+
+# with all data including the United States
+lr1 = LinearRegression()
+lr1.fit(select_gdp_df, select_le_df)
+min_le = lr1.predict([min_gdp])
+max_le = lr1.predict([max_gdp])
+
+ax.plot([min_gdp, max_gdp], [min_le, max_le], linestyle='dashed',
+        color='#848484', linewidth=1, label='Data with the United States')
+
+# with all data excluding the United States
+select_wo_US_list = set(selected_countries) - set(['United States'])
+select_wo_US_df = merged_df[merged_df.index.isin(select_wo_US_list)]
+select_wo_US_gdp_df = select_wo_US_df[['GDP per capita']]
+select_wo_US_le_df = select_wo_US_df['Life Expectancy']
+
+lr2 = LinearRegression()
+lr2.fit(select_wo_US_gdp_df, select_wo_US_le_df)
+min_le2 = lr2.predict([min_gdp])
+max_le2 = lr2.predict([max_gdp])
+
+ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dotted',
+        color='#848484', linewidth=1, label='Data without the United States')
+
+ax.legend(loc=3, fontsize=11)
 plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png')
