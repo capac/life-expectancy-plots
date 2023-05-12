@@ -3,7 +3,7 @@ from matplotlib import ticker
 import pandas as pd
 from pathlib import Path
 
-# plt.style.use('seaborn-v0_8-talk')
+plt.style.use('scatterplot-style.mplstyle')
 
 data_dir = Path.home() / 'Programming/data/life-expectancy-vs-gdp-pc/'
 python_work_dir = Path.home() / 'Programming/Python/'
@@ -53,20 +53,18 @@ select_countries_df = merged_df[merged_df.index.isin(selected_countries)]
 fig, ax = plt.subplots(figsize=(12, 8))
 ax.scatter(select_countries_df['GDP per capita'],
            select_countries_df['Life Expectancy'],
-           alpha=0.8, color='royalblue', s=120)
+           alpha=0.8, color='#1879CE', s=130)
 ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x*1e-3))
 ax.xaxis.set_major_formatter(ticks)
 
-ax.set_xlabel('GDP per capita (in thousands of USD)', fontsize=12)
-ax.set_ylabel('Life expectancy (years)', fontsize=12)
-ax.set_title('Life expectancy versus GDP per capita (2019)', fontsize=14)
+ax.set_xlabel('GDP per capita (in thousands of USD)')
+ax.set_ylabel('Life expectancy (years)')
+ax.set_title('Life expectancy versus GDP per capita (2019)')
 
 gdp_pc = merged_df['GDP per capita']
 le = merged_df['Life Expectancy']
 
 for label in selected_countries:
-    ax.annotate(label, (gdp_pc.loc[label]-400, le.loc[label]-0.3))
+    ax.annotate(label, (gdp_pc.loc[label]-400, le.loc[label]-0.4))
 
-fig.tight_layout()
-plt.grid(linestyle=':')
 plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png', bbox_inches='tight')
