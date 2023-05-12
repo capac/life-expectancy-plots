@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
+from matplotlib import ticker
 import pandas as pd
 from pathlib import Path
 
-# plt.style.use('seaborn-v0_8-whitegrid')
+# plt.style.use('seaborn-v0_8-talk')
 
 data_dir = Path.home() / 'Programming/data/life-expectancy-vs-gdp-pc/'
 python_work_dir = Path.home() / 'Programming/Python/'
@@ -38,29 +39,32 @@ merged_df.rename(columns={'val': 'Life Expectancy', '2019': 'GDP per capita'},
 merged_df.replace({'Country Name': {'Korea, Rep.': 'South Korea', }}, inplace=True)
 
 merged_df.set_index('Country Name', inplace=True)
-countries_above = ['Australia', 'Canada', 'Belgium',
-                   'Luxembourg', 'Netherlands', 'New Zealand',]
-countries_below = ['Switzerland', 'Austria', 'Germany', 'Denmark',
-                   'Spain', 'Finland', 'France', 'United Kingdom',
-                   'Greece', 'Ireland', 'Italy', 'Japan',
-                   'South Korea', 'Norway', 'Portugal', 'Singapore',
-                   'Sweden', 'United States',]
+unselected_countries = ['Australia', 'Canada', 'Belgium',
+                        'Luxembourg', 'Netherlands', 'New Zealand',]
+selected_countries = ['Switzerland', 'Austria', 'Germany', 'Denmark',
+                      'Spain', 'Finland', 'France', 'United Kingdom',
+                      'Greece', 'Ireland', 'Italy', 'Japan',
+                      'South Korea', 'Norway', 'Portugal', 'Singapore',
+                      'Sweden', 'United States',]
 
-select_countries_df = merged_df[merged_df.index.isin(countries_below)]
+select_countries_df = merged_df[merged_df.index.isin(selected_countries)]
 
 # life expectancy plot versus GDP per capita for 2019
 fig, ax = plt.subplots(figsize=(12, 8))
 ax.scatter(select_countries_df['GDP per capita'],
            select_countries_df['Life Expectancy'],
-           alpha=0.6, color='royalblue', s=120)
-ax.set_xlabel('GDP per capita (USD)', fontsize=11)
-ax.set_ylabel('Life expectancy (years)', fontsize=11)
-ax.set_title('Life expectancy per GDP per capita (2019)', fontsize=12)
+           alpha=0.8, color='royalblue', s=120)
+ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x*1e-3))
+ax.xaxis.set_major_formatter(ticks)
+
+ax.set_xlabel('GDP per capita (in thousands of USD)', fontsize=12)
+ax.set_ylabel('Life expectancy (years)', fontsize=12)
+ax.set_title('Life expectancy versus GDP per capita (2019)', fontsize=14)
 
 gdp_pc = merged_df['GDP per capita']
 le = merged_df['Life Expectancy']
 
-for label in countries_below:
+for label in selected_countries:
     ax.annotate(label, (gdp_pc.loc[label]-400, le.loc[label]-0.3))
 
 fig.tight_layout()
