@@ -54,6 +54,7 @@ fig, ax = plt.subplots(figsize=(12, 8))
 ax.scatter(select_countries_df['GDP per capita'],
            select_countries_df['Life Expectancy'],
            alpha=0.8, color='#1879CE', s=130)
+ax.set_ylim([64.5, 75])
 ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x*1e-3))
 ax.xaxis.set_major_formatter(ticks)
 
@@ -67,4 +68,4 @@ le = merged_df['Life Expectancy']
 for label in selected_countries:
     ax.annotate(label, (gdp_pc.loc[label]-400, le.loc[label]-0.4))
 
-plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png', bbox_inches='tight')
+plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png')
