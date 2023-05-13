@@ -51,14 +51,14 @@ selected_countries = ['Switzerland', 'Austria', 'Germany', 'Denmark',
                       'South Korea', 'Norway', 'Portugal', 'Singapore',
                       'Sweden', 'United States',]
 
-select_countries_df = merged_df[merged_df.index.isin(selected_countries)]
+select_countries_df = merged_df.loc[merged_df.index.isin(selected_countries)]
 
 # life expectancy plot versus GDP per capita for 2019
-fig, ax = plt.subplots(figsize=(12, 8))
-ax.scatter(select_countries_df['GDP per capita'],
-           select_countries_df['Life Expectancy'],
-           alpha=0.8, color='#1879CE', s=130)
-ax.set_ylim([64.5, 75])
+fig, ax = plt.subplots()
+ax.scatter(merged_df['GDP per capita'],
+           merged_df['Life Expectancy'],
+           alpha=0.6, s=130)
+ax.set_ylim([64.8, 74.8])
 ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x*1e-3))
 ax.xaxis.set_major_formatter(ticks)
 
@@ -70,24 +70,28 @@ gdp_pc = merged_df['GDP per capita']
 le = merged_df['Life Expectancy']
 
 for label in selected_countries:
-    ax.annotate(label, (gdp_pc.loc[label]-400, le.loc[label]-0.4))
+    ax.annotate(label, (gdp_pc.loc[label]-350, le.loc[label]-0.3))
 
-select_gdp_df = select_countries_df[['GDP per capita']]
-select_le_df = select_countries_df['Life Expectancy']
+ax.annotate('Luxembourg', (gdp_pc.loc['Luxembourg']-7500, le.loc['Luxembourg']+0.2))
+
+select_gdp_df = merged_df[['GDP per capita']]
+select_le_df = merged_df['Life Expectancy']
 min_gdp = select_gdp_df.min()
 max_gdp = select_gdp_df.max()
 
 # with all data including the United States
 lr1 = LinearRegression()
 lr1.fit(select_gdp_df, select_le_df)
-min_le = lr1.predict([min_gdp])
-max_le = lr1.predict([max_gdp])
+min_le1 = lr1.predict([min_gdp])
+max_le1 = lr1.predict([max_gdp])
 
-ax.plot([min_gdp, max_gdp], [min_le, max_le], linestyle='dashed',
-        color='#848484', linewidth=1, label='Data with the United States')
+ax.plot([min_gdp, max_gdp], [min_le1, max_le1], linestyle='dotted',
+        color='k', linewidth=1, label='Data with the United States '
+                                      'and Luxembourg')
 
 # with all data excluding the United States
-select_wo_US_list = set(selected_countries) - set(['United States'])
+select_wo_US_list = set(selected_countries + unselected_countries) - \
+                    set(['United States', 'Luxembourg',])
 select_wo_US_df = merged_df[merged_df.index.isin(select_wo_US_list)]
 select_wo_US_gdp_df = select_wo_US_df[['GDP per capita']]
 select_wo_US_le_df = select_wo_US_df['Life Expectancy']
@@ -97,8 +101,9 @@ lr2.fit(select_wo_US_gdp_df, select_wo_US_le_df)
 min_le2 = lr2.predict([min_gdp])
 max_le2 = lr2.predict([max_gdp])
 
-ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dotted',
-        color='#848484', linewidth=1, label='Data without the United States')
+ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dashed',
+        color='k', linewidth=1, label='Data without the United States '
+                                      'and Luxembourg')
 
 ax.legend(loc=3, fontsize=11)
 plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png')
