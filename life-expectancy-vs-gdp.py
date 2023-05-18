@@ -57,7 +57,7 @@ select_countries_df = merged_df.loc[merged_df.index.isin(selected_countries)]
 fig, ax = plt.subplots()
 ax.scatter(merged_df['GDP per capita'],
            merged_df['Life Expectancy'],
-           alpha=0.6, s=130)
+           alpha=1.0, s=130)
 ax.set_ylim([64.8, 74.8])
 ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x*1e-3))
 ax.xaxis.set_major_formatter(ticks)
