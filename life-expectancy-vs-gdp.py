@@ -9,9 +9,9 @@ warnings.filterwarnings('ignore')
 
 plt.style.use('scatterplot-style.mplstyle')
 
-data_dir = Path.home() / 'Programming/data/life-expectancy-vs-gdp-pc/'
+data_dir = Path.home() / 'Programming/data/life-expectancy/'
 python_work_dir = Path.home() / 'Programming/Python/'
-work_dir = python_work_dir / 'data-visualization/life-expectancy-vs-gdp-pc/'
+work_dir = python_work_dir / 'data-visualization/life-expectancy/'
 
 # life expectancy data
 le_data_dir = data_dir / 'IHME-GBD_2019_DATA-7e5aa45e-1'
