@@ -11,7 +11,7 @@ plt.style.use('scatterplot-style.mplstyle')
 
 data_dir = Path.home() / 'Programming/data/life-expectancy/'
 python_work_dir = Path.home() / 'Programming/Python/'
-work_dir = python_work_dir / 'data-visualization/life-expectancy/'
+work_dir = python_work_dir / 'data-visualization/life-expectancy_1990-2019/'
 
 # life expectancy data
 le_data_dir = data_dir / 'IHME-GBD_2019_DATA-7e5aa45e-1'
@@ -71,6 +71,13 @@ le = merged_df['Life Expectancy']
 
 for label in selected_countries:
     ax.annotate(label, (gdp_pc.loc[label]-350, le.loc[label]-0.3))
+
+# Set source text
+ax.text(x=.08, y=-0.02,
+        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
+        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
+        transform=fig.transFigure,
+        ha='left', fontsize=11, alpha=.7)
 
 ax.annotate('Luxembourg', (gdp_pc.loc['Luxembourg']-7500, le.loc['Luxembourg']+0.2))
 
