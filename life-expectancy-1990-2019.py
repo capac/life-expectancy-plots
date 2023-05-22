@@ -6,7 +6,7 @@ plt.style.use('lineplot-style.mplstyle')
 
 data_dir = Path.home() / 'Programming/data/life-expectancy/'
 python_work_dir = Path.home() / 'Programming/Python/'
-work_dir = python_work_dir / 'data-visualization/life-expectancy/'
+work_dir = python_work_dir / 'data-visualization/life-expectancy_1990-2019/'
 
 # life expectancy data
 le_data_dir = data_dir / 'IHME-GBD_2019_DATA-3ae4fba0-1/'
@@ -39,7 +39,15 @@ ax.set_ylabel('Life expectancy (years)')
 ax.set_title('Life expectancy from 1990 to 2019')
 
 for label in selected_countries:
-    ax.annotate(label, (2019, select_countries_df.loc[2019, label]))
+    ax.annotate(label, (2019.1, select_countries_df.loc[2019, label]))
 
-ax.legend(loc='center right', fontsize=11, bbox_to_anchor=(0.18, 0.85))
+# Set source text
+ax.text(x=.08, y=-0.02,
+        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
+        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
+        transform=fig.transFigure,
+        ha='left', fontsize=11, alpha=.7)
+
+ax.legend(loc='center right', fontsize=11,
+          bbox_to_anchor=(0.195, 0.85), fancybox=True)
 plt.savefig(work_dir / 'plots/life_expectancy-1990-2019.png')
