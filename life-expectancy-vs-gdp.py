@@ -2,10 +2,8 @@ import matplotlib.pyplot as plt
 from matplotlib import ticker
 import pandas as pd
 from pathlib import Path
-from sklearn.linear_model import LinearRegression
-
-import warnings
-warnings.filterwarnings('ignore')
+import statsmodels.api as sm
+from patsy import dmatrices
 
 plt.style.use('scatterplot-style.mplstyle')
 
@@ -81,36 +79,41 @@ ax.text(x=.08, y=-0.02,
 
 ax.annotate('Luxembourg', (gdp_pc.loc['Luxembourg']-7500, le.loc['Luxembourg']+0.2))
 
-select_gdp_df = merged_df[['GDP per capita']]
-select_le_df = merged_df['Life Expectancy']
-min_gdp = select_gdp_df.min()
-max_gdp = select_gdp_df.max()
+min_gdp = merged_df['GDP per capita'].min()
+max_gdp = merged_df['GDP per capita'].max()
 
 # with all data including the United States
-lr1 = LinearRegression()
-lr1.fit(select_gdp_df, select_le_df)
-min_le1 = lr1.predict([min_gdp])
-max_le1 = lr1.predict([max_gdp])
+y1, X1 = dmatrices("Q('Life Expectancy') ~ Q('GDP per capita')",
+                   return_type='dataframe', data=merged_df)
+results1 = sm.OLS(y1, X1).fit()
+min_le1 = results1.params[0] + results1.params[1]*min_gdp
+max_le1 = results1.params[0] + results1.params[1]*max_gdp
 
 ax.plot([min_gdp, max_gdp], [min_le1, max_le1], linestyle='dotted',
         color='k', linewidth=1, label='Data with the United States '
                                       'and Luxembourg')
 
 # with all data excluding the United States
-select_wo_US_list = set(selected_countries + unselected_countries) - \
-                    set(['United States', 'Luxembourg',])
-select_wo_US_df = merged_df[merged_df.index.isin(select_wo_US_list)]
-select_wo_US_gdp_df = select_wo_US_df[['GDP per capita']]
-select_wo_US_le_df = select_wo_US_df['Life Expectancy']
+select_wo_US_LX_list = set(selected_countries + unselected_countries) - \
+                       set(['United States', 'Luxembourg',])
+select_wo_US_LX_df = merged_df[merged_df.index.isin(select_wo_US_LX_list)]
 
-lr2 = LinearRegression()
-lr2.fit(select_wo_US_gdp_df, select_wo_US_le_df)
-min_le2 = lr2.predict([min_gdp])
-max_le2 = lr2.predict([max_gdp])
+y2, X2 = dmatrices("Q('Life Expectancy') ~ Q('GDP per capita')",
+                   return_type='dataframe', data=select_wo_US_LX_df)
+results2 = sm.OLS(y2, X2).fit()
+min_le2 = results2.params[0] + results2.params[1]*min_gdp
+max_le2 = results2.params[0] + results2.params[1]*max_gdp
 
 ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dashed',
         color='k', linewidth=1, label='Data without the United States '
                                       'and Luxembourg')
+
+# Set source text
+ax.text(x=.08, y=-0.02,
+        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
+        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
+        transform=fig.transFigure,
+        ha='left', fontsize=11, alpha=.7)
 
 ax.legend(loc=3, fontsize=11)
 plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png')
