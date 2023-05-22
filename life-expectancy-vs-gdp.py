@@ -7,9 +7,9 @@ from patsy import dmatrices
 
 plt.style.use('scatterplot-style.mplstyle')
 
-data_dir = Path.home() / 'Programming/data/life-expectancy-vs-gdp-pc/'
+data_dir = Path.home() / 'Programming/data/life-expectancy/'
 python_work_dir = Path.home() / 'Programming/Python/'
-work_dir = python_work_dir / 'data-visualization/life-expectancy-vs-gdp-pc/'
+work_dir = python_work_dir / 'data-visualization/life-expectancy_1990-2019/'
 
 # life expectancy data
 le_data_dir = data_dir / 'IHME-GBD_2019_DATA-7e5aa45e-1'
@@ -100,6 +100,13 @@ max_le2 = results2.params[0] + results2.params[1]*max_gdp
 ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dashed',
         color='k', linewidth=1, label='Data without the United States '
                                       'and Luxembourg')
+
+# Set source text
+ax.text(x=.08, y=-0.02,
+        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
+        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
+        transform=fig.transFigure,
+        ha='left', fontsize=11, alpha=.7)
 
 ax.legend(loc=3, fontsize=11)
 plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp_statsmodels.png')
