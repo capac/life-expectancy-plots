@@ -12,14 +12,15 @@ work_dir = python_work_dir / 'data-visualization/life-expectancy_1990-2019/'
 le_data_dir = data_dir / 'IHME-GBD_2019_DATA-3ae4fba0-1/'
 le_data_file = le_data_dir / 'IHME-GBD_2019_DATA-3ae4fba0-1.csv'
 
-# dataframes
+# life expectancy dataframe
 le_df = pd.read_csv(le_data_file)
 
-# life expectancy data
+# life expectancy pivot table dataframe
 le_yr_df = le_df.pivot(index='year', columns='location_name', values='val')
 le_yr_df.rename(columns={'United States of America': 'United States',
                          'Republic of Korea': 'South Korea'}, inplace=True)
 
+# there are too many countries to plot, I've select just a few to show
 unselected_countries = ['Australia', 'Belgium', 'Canada',
                         'Luxembourg', 'Netherlands', 'New Zealand',
                         'Switzerland', 'Austria', 'Denmark',
@@ -43,11 +44,11 @@ for label in selected_countries:
     ax.annotate(label, (2019.1, select_countries_df.loc[2019, label]))
 
 # Set source text
-ax.text(x=.08, y=-0.02,
+ax.text(x=0.08, y=-0.02,
         s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
         '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
         transform=fig.transFigure,
-        ha='left', fontsize=11, alpha=.7)
+        ha='left', fontsize=11, alpha=0.7)
 
 ax.legend(loc='center right', fontsize=11,
           bbox_to_anchor=(0.195, 0.85), fancybox=True)
