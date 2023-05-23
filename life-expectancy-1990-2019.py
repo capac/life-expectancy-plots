@@ -28,11 +28,12 @@ selected_countries = ['United Kingdom', 'Germany', 'Greece',
                       'Ireland', 'Italy', 'Japan', 'South Korea',
                       'Norway', 'Singapore', 'United States', 'France',]
 
-select_countries_df = le_yr_df.loc[:, selected_countries]
+select_countries_df = le_yr_df[selected_countries]
 
 # life expectancy plot from 1990 to 2019
 fig, ax = plt.subplots()
-select_countries_df.plot(kind='line', ax=ax)
+ax.plot(select_countries_df.index, select_countries_df,
+        label=select_countries_df.columns)
 
 ax.set_xlabel('Years')
 ax.set_ylabel('Life expectancy (years)')
