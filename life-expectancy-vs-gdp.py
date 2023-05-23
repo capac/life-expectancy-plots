@@ -103,8 +103,9 @@ ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dashed',
 
 # set source text
 ax.text(x=0.08, y=-0.02,
-        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
-        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
+        s='''Sources: "2019 IHME Global Burden of Disease Study Results" '''
+        '''and "World Bank national accounts data, '''
+        '''and OECD National Accounts data files (3/30/2023)."''',
         transform=fig.transFigure,
         ha='left', fontsize=11, alpha=0.7)
 
