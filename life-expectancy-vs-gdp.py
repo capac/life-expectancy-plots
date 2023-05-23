@@ -23,7 +23,7 @@ gdp_data_file = gdp_data_dir / 'API_NY.GDP.PCAP.CD_DS2_en_csv_v2_5447781.csv'
 le_df = pd.read_csv(le_data_file)
 gdp_df = pd.read_csv(gdp_data_file, header=4, na_values='')
 
-# life expectancy data
+# life expectancy country selection
 le_nat_yr_df = le_df.loc[:, ['location_name', 'val']]
 # there is a difference in naming between the two dataframes
 # for the United States and the Republic of Korea.
@@ -71,18 +71,18 @@ for label in selected_countries:
     ax.annotate(label, (gdp_pc.loc[label]-350, le.loc[label]-0.3))
 
 # Set source text
-ax.text(x=.08, y=-0.02,
+ax.text(x=0.08, y=-0.02,
         s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
         '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
         transform=fig.transFigure,
-        ha='left', fontsize=11, alpha=.7)
+        ha='left', fontsize=11, alpha=0.7)
 
 ax.annotate('Luxembourg', (gdp_pc.loc['Luxembourg']-7500, le.loc['Luxembourg']+0.2))
 
 min_gdp = merged_df['GDP per capita'].min()
 max_gdp = merged_df['GDP per capita'].max()
 
-# with all data including the United States
+# linear fit with all data including the United States and Luxembourg
 y1, X1 = dmatrices("Q('Life Expectancy') ~ Q('GDP per capita')",
                    return_type='dataframe', data=merged_df)
 results1 = sm.OLS(y1, X1).fit()
@@ -90,10 +90,10 @@ min_le1 = results1.params[0] + results1.params[1]*min_gdp
 max_le1 = results1.params[0] + results1.params[1]*max_gdp
 
 ax.plot([min_gdp, max_gdp], [min_le1, max_le1], linestyle='dotted',
-        color='k', linewidth=1, label='Data with the United States '
-                                      'and Luxembourg')
+        color='k', linewidth=1, label='Fit with United States '
+                                      'and Luxembourg data')
 
-# with all data excluding the United States
+# linear fit with all data excluding the United States and Luxembourg
 select_wo_US_LX_list = set(selected_countries + unselected_countries) - \
                        set(['United States', 'Luxembourg',])
 select_wo_US_LX_df = merged_df[merged_df.index.isin(select_wo_US_LX_list)]
@@ -105,15 +105,15 @@ min_le2 = results2.params[0] + results2.params[1]*min_gdp
 max_le2 = results2.params[0] + results2.params[1]*max_gdp
 
 ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dashed',
-        color='k', linewidth=1, label='Data without the United States '
-                                      'and Luxembourg')
+        color='k', linewidth=1, label='Fit without United States '
+                                      'and Luxembourg data')
 
 # Set source text
-ax.text(x=.08, y=-0.02,
+ax.text(x=0.08, y=-0.02,
         s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
         '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
         transform=fig.transFigure,
-        ha='left', fontsize=11, alpha=.7)
+        ha='left', fontsize=11, alpha=0.7)
 
 ax.legend(loc=3, fontsize=11)
 plt.savefig(work_dir / 'plots/life_expectancy_vs_gdp.png')
