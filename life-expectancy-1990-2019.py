@@ -45,8 +45,7 @@ for label in selected_countries:
 
 # Set source text
 ax.text(x=0.08, y=-0.02,
-        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
-        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
+        s='''Source: "2019 IHME Global Burden of Disease Study Results"''',
         transform=fig.transFigure,
         ha='left', fontsize=11, alpha=0.7)
 
