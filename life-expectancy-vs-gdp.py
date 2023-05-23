@@ -70,13 +70,6 @@ le = merged_df['Life Expectancy']
 for label in selected_countries:
     ax.annotate(label, (gdp_pc.loc[label]-350, le.loc[label]-0.3))
 
-# Set source text
-ax.text(x=0.08, y=-0.02,
-        s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
-        '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
-        transform=fig.transFigure,
-        ha='left', fontsize=11, alpha=0.7)
-
 ax.annotate('Luxembourg', (gdp_pc.loc['Luxembourg']-7500, le.loc['Luxembourg']+0.2))
 
 min_gdp = merged_df['GDP per capita'].min()
@@ -108,7 +101,7 @@ ax.plot([min_gdp, max_gdp], [min_le2, max_le2], linestyle='dashed',
         color='k', linewidth=1, label='Fit without United States '
                                       'and Luxembourg data')
 
-# Set source text
+# set source text
 ax.text(x=0.08, y=-0.02,
         s='''Source: "Global Burden of Disease Study 2019 (GBD 2019) Results" '''
         '''via Institute for Health Metrics and Evaluation (IHME), 2020. ''',
